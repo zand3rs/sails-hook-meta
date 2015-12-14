@@ -1,0 +1,32 @@
+{
+  "name": "sails-hook-meta",
+  "version": "0.0.1",
+  "description": "Sails extension for setting meta header.",
+  "main": "index.js",
+  "sails": {
+    "isHook": true
+  },
+  "scripts": {
+    "test": "make MOCHA_OPTS='-C -R dot' test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/zand3rs/sails-hook-meta.git"
+  },
+  "keywords": [
+    "sails",
+    "hook",
+    "meta",
+    "metadata"
+  ],
+  "author": "Alexander Magtipon",
+  "license": "ISC",
+  "homepage": "https://github.com/zand3rs/sails-hook-meta",
+  "bugs": {
+    "url": "https://github.com/zand3rs/sails-hook-meta/issues"
+  },
+  "devDependencies": {
+    "node-test-helper": "^1.0.0",
+    "sails": "^0.11.3"
+  }
+}
