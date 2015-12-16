@@ -25,19 +25,19 @@ describe(TEST_NAME, function() {
 
     it("should return true", function() {
       expect(meta.set({ key: "val" })).to.be.true;
-      expect(meta._meta).to.have.property("key=:=val")
+      expect(meta._meta).to.have.property("key-val")
                         .that.eql([{ key: "val" }]);
 
       expect(meta.set({ key: "val1" })).to.be.true;
-      expect(meta._meta).to.have.property("key=:=val1")
+      expect(meta._meta).to.have.property("key-val-1")
                         .that.eql([{ key: "val1" }]);
 
       expect(meta.set({ key1: "val1" }, { key2: "val2" }, { key1: "val3" })).to.be.true;
-      expect(meta._meta).to.have.property("key1=:=val1")
+      expect(meta._meta).to.have.property("key-1-val-1")
                         .that.eql([{ key1: "val1", key2: "val2" }]);
 
       expect(meta.set({ key1: "val1" }, { key2: "val2", key3: "val3" })).to.be.true;
-      expect(meta._meta).to.have.property("key1=:=val1")
+      expect(meta._meta).to.have.property("key-1-val-1")
                         .that.eql([{ key1: "val1", key2: "val2", key3: "val3" }]);
     });
   });
@@ -54,15 +54,15 @@ describe(TEST_NAME, function() {
 
     it("should be successful", function() {
       expect(meta.add({ key: "val" })).to.be.true;
-      expect(meta._meta).to.have.property("key=:=val")
+      expect(meta._meta).to.have.property("key-val")
                         .that.eql([{ key: "val" }]);
 
       expect(meta.add({ key: "val" })).to.be.true;
-      expect(meta._meta).to.have.property("key=:=val")
+      expect(meta._meta).to.have.property("key-val")
                         .that.eql([{ key: "val" }, { key: "val" }]);
 
       expect(meta.add({ key: "val" }, { key1: "val1" })).to.be.true;
-      expect(meta._meta).to.have.property("key=:=val")
+      expect(meta._meta).to.have.property("key-val")
                         .that.eql([{ key: "val" }, { key: "val" }, { key: "val", key1: "val1" }]);
     });
   });
@@ -79,11 +79,11 @@ describe(TEST_NAME, function() {
 
     it("should be successful", function() {
       expect(meta.set({ key: "val" })).to.be.true;
-      expect(meta._meta).to.have.property("key=:=val")
+      expect(meta._meta).to.have.property("key-val")
                         .that.eql([{ key: "val" }]);
 
       expect(meta.del({ key: "val" })).to.be.true;
-      expect(meta._meta).to.not.have.property("key=:=val");
+      expect(meta._meta).to.not.have.property("key-val");
     });
   });
 
