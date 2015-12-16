@@ -88,12 +88,21 @@ describe(TEST_NAME, function() {
   });
 
   describe("#toString()", function() {
-    it("returns the meta markup string", function() {
+    it("should return empty string", function() {
+      expect(meta.toString()).to.equal("");
+    });
+
+    it("should return the meta markup string", function() {
       expect(meta.set({ name: "name1" }, { content: "content1" })).to.be.true;
       expect(meta.toString()).to.equal('<meta name="name1" content="content1">');
 
       expect(meta.set({ name: "name2" }, { content: "content2" })).to.be.true;
       expect(meta.toString()).to.equal('<meta name="name1" content="content1">\n<meta name="name2" content="content2">');
+    });
+
+    it("should escape html chars", function() {
+      expect(meta.set({ key: "a-\"-'-<->-&-`-z" })).to.be.true;
+      expect(meta.toString()).to.equal('<meta key="a-&quot;-&#39;-&lt;-&gt;-&amp;-&#96;-z">');
     });
   });
 
