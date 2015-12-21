@@ -29,16 +29,28 @@ describe(TEST_NAME, function() {
                         .that.eql([{ key: "val" }]);
 
       expect(meta.set({ key: "val1" })).to.be.true;
-      expect(meta._meta).to.have.property("key-val-1")
+      expect(meta._meta).to.have.property("key-val1")
                         .that.eql([{ key: "val1" }]);
 
       expect(meta.set({ key1: "val1" }, { key2: "val2" }, { key1: "val3" })).to.be.true;
-      expect(meta._meta).to.have.property("key-1-val-1")
+      expect(meta._meta).to.have.property("key1-val1")
                         .that.eql([{ key1: "val1", key2: "val2" }]);
 
       expect(meta.set({ key1: "val1" }, { key2: "val2", key3: "val3" })).to.be.true;
-      expect(meta._meta).to.have.property("key-1-val-1")
+      expect(meta._meta).to.have.property("key1-val1")
                         .that.eql([{ key1: "val1", key2: "val2", key3: "val3" }]);
+    });
+
+    it("should support attribute keys with dash", function() {
+      expect(meta.set({ "key-1-2-3": "val-4-5-6" })).to.be.true;
+      expect(meta._meta).to.have.property("key-1-2-3-val-4-5-6")
+                        .that.eql([{ "key-1-2-3": "val-4-5-6" }]);
+    });
+
+    it("should remove invalid characters from the key", function() {
+      expect(meta.set({ "key-1-2-3": "val=4;5.6" })).to.be.true;
+      expect(meta._meta).to.have.property("key-1-2-3-val456")
+                        .that.eql([{ "key-1-2-3": "val=4;5.6" }]);
     });
   });
 
@@ -96,8 +108,8 @@ describe(TEST_NAME, function() {
       expect(meta.set({ name: "name1" }, { content: "content1" })).to.be.true;
       expect(meta.toString()).to.equal('<meta name="name1" content="content1">');
 
-      expect(meta.set({ name: "name2" }, { content: "content2" })).to.be.true;
-      expect(meta.toString()).to.equal('<meta name="name1" content="content1">\n<meta name="name2" content="content2">');
+      expect(meta.set({ "http-equiv": "Content-Type" }, { content: "text/html; charset=utf-8" })).to.be.true;
+      expect(meta.toString()).to.equal('<meta name="name1" content="content1">\n<meta http-equiv="Content-Type" content="text/html; charset=utf-8">');
     });
 
     it("should escape html chars", function() {
