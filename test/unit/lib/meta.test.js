@@ -61,14 +61,14 @@ describe(TEST_NAME, function() {
     });
   });
 
-  describe("#del()", function() {
-    it("should return false", function() {
-      expect(meta).itself.to.respondTo("del");
-      expect(meta.del()).to.be.false;
-      expect(meta.del({})).to.be.false;
-      expect(meta.del(new Object())).to.be.false;
-      expect(meta.del(new Function())).to.be.false;
-      expect(meta.del({ key1: "val1", key2: "val2" })).to.be.false;
+  describe("#remove()", function() {
+    it("should return false given an invalid argument", function() {
+      expect(meta).itself.to.respondTo("remove");
+      expect(meta.remove()).to.be.false;
+      expect(meta.remove({})).to.be.false;
+      expect(meta.remove(new Object())).to.be.false;
+      expect(meta.remove(new Function())).to.be.false;
+      expect(meta.remove({ key1: "val1", key2: "val2" })).to.be.false;
     });
 
     it("should be successful", function() {
@@ -76,7 +76,7 @@ describe(TEST_NAME, function() {
       expect(meta._meta).to.have.property("key-val")
                         .that.eql([{ key: "val" }]);
 
-      expect(meta.del({ key: "val" })).to.be.true;
+      expect(meta.remove({ key: "val" })).to.be.true;
       expect(meta._meta).to.not.have.property("key-val");
     });
   });
