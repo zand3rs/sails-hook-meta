@@ -61,31 +61,6 @@ describe(TEST_NAME, function() {
     });
   });
 
-  describe("#add()", function() {
-    it("should return false", function() {
-      expect(meta).itself.to.respondTo("add");
-      expect(meta.add()).to.be.false;
-      expect(meta.add({})).to.be.false;
-      expect(meta.add(new Object())).to.be.false;
-      expect(meta.add(new Function())).to.be.false;
-      expect(meta.add({ key1: "val1", key2: "val2" })).to.be.false;
-    });
-
-    it("should be successful", function() {
-      expect(meta.add({ key: "val" })).to.be.true;
-      expect(meta._meta).to.have.property("key-val")
-                        .that.eql([{ key: "val" }]);
-
-      expect(meta.add({ key: "val" })).to.be.true;
-      expect(meta._meta).to.have.property("key-val")
-                        .that.eql([{ key: "val" }, { key: "val" }]);
-
-      expect(meta.add({ key: "val" }, { key1: "val1" })).to.be.true;
-      expect(meta._meta).to.have.property("key-val")
-                        .that.eql([{ key: "val" }, { key: "val" }, { key: "val", key1: "val1" }]);
-    });
-  });
-
   describe("#del()", function() {
     it("should return false", function() {
       expect(meta).itself.to.respondTo("del");
