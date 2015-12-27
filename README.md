@@ -47,6 +47,11 @@ The rest of the attributes must be in the second argument **attrs**. Array of me
 req.meta.set({ charset: "utf-8" });
 req.meta.set({ name: "Author" }, { lang: "fr", content: "Arnaud Le Hors" });
 req.meta.set({ "http-equiv": "Content-Type" }, { content: "text/html; charset=utf-8" });
+
+req.meta.set({ property: "og:image" }, [
+  { content: "http://example.com/rock.jpg" },
+  { content: "http://example.com/rock2.jpg" }
+]);
 ```
 
 ### remove(attr)
