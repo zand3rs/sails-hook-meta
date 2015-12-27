@@ -100,4 +100,18 @@ describe(TEST_NAME, function() {
     });
   });
 
+  describe("#toJSON()", function() {
+    it("should be empty", function() {
+      expect(meta.toJSON()).to.be.an.empty("array");
+    });
+
+    it("should return the meta array", function() {
+      expect(meta.set({ key: "val" })).to.be.true;
+      expect(meta.set({ key1: "val1" }, [{ content: "content1" }, { content: "content2" }])).to.be.true;
+      var json = meta.toJSON();
+      expect(json).to.be.an("array").that.is.not.empty;
+      expect(json).to.eql([ { key: "val" }, { key1: "val1", content: "content1" }, { key1: "val1", content: "content2" } ]);
+    });
+  });
+
 });
