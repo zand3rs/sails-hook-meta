@@ -63,6 +63,14 @@ req.meta.remove({ charset: "utf-8" });
 req.meta.remove({ "http-equiv": "Content-Type" });
 ```
 
+### clear()
+
+Deletes all meta items.
+
+```javascript
+req.meta.clear();
+```
+
 ### toString()
 
 Returns the meta markup string.

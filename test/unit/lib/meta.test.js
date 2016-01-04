@@ -81,6 +81,22 @@ describe(TEST_NAME, function() {
     });
   });
 
+  describe("#clear()", function() {
+    it("should be successful", function() {
+      expect(meta.set({ key1: "val1" })).to.be.true;
+      expect(meta._meta).to.have.property("key1-val1")
+                        .that.eql([{ key1: "val1" }]);
+
+      expect(meta.set({ key2: "val2" })).to.be.true;
+      expect(meta._meta).to.have.property("key2-val2")
+                        .that.eql([{ key2: "val2" }]);
+
+      expect(meta._meta).not.to.be.empty;
+      expect(meta.clear()).to.be.true;
+      expect(meta._meta).to.be.empty;
+    });
+  });
+
   describe("#toString()", function() {
     it("should return empty string", function() {
       expect(meta.toString()).to.equal("");
