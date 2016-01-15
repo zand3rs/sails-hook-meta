@@ -1,6 +1,6 @@
 {
   "name": "sails-hook-meta",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Sails extension for generating meta header.",
   "main": "index.js",
   "sails": {
