@@ -17,46 +17,138 @@ describe(TEST_NAME, function() {
     it("should return false given an invalid argument", function() {
       expect(meta).itself.to.respondTo("set");
       expect(meta.set()).to.be.false;
+      expect(meta.set(1)).to.be.false;
+      expect(meta.set("")).to.be.false;
       expect(meta.set({})).to.be.false;
       expect(meta.set(new Object())).to.be.false;
       expect(meta.set(new Function())).to.be.false;
     });
 
-    describe("with only one argument given", function() {
-      it("should only accept single key-value pair object parameter", function() {
-        expect(meta.set({ key1: "val1", key2: "val2" })).to.be.false;
+    describe("with object argument", function() {
+      it("should be successful", function() {
+        var entry = { name: "name1", content: "content1" };
 
-        expect(meta.set({ key: "val" })).to.be.true;
-        expect(meta._meta).to.have.property("key-val")
-                          .that.eql([{ key: "val" }]);
+        expect(meta._meta).to.not.deep.include(entry);
+        expect(meta.set(entry)).to.be.true;
+        expect(meta._meta).to.deep.include(entry);
+      });
+
+      it("should convert keys to lowercase", function() {
+        expect(meta._meta).to.not.deep.include({ name: "name1", content: "content1" });
+        expect(meta.set({ NAME: "name1", CONTENT: "content1" })).to.be.true;
+        expect(meta._meta).to.deep.include({ name: "name1", content: "content1" });
       });
     });
 
-    describe("with two arguments given", function() {
-      it("should accept object as second parameter", function() {
-        expect(meta.set({ key1: "val1" }, { key2: "val2", key3: "val3" })).to.be.true;
-        expect(meta._meta).to.have.property("key1-val1")
-                          .that.eql([{ key1: "val1", key2: "val2", key3: "val3" }]);
-      });
+    describe("with array argument", function() {
+      it("should be successful", function() {
+        var entries = [
+          { name: "name1", content: "content1" },
+          { name: "name2", content: "content2" }
+        ];
 
-      it("should accept array as second parameter", function() {
-        expect(meta.set({ key1: "val1" }, [{ key2: "val2" }, { key3: "val3" }])).to.be.true;
-        expect(meta._meta).to.have.property("key1-val1")
-                          .that.eql([{ key1: "val1", key2: "val2" }, { key1: "val1", key3: "val3" }]);
+        expect(meta._meta).to.not.deep.include.members(entries);
+        expect(meta.set(entries)).to.be.true;
+        expect(meta._meta).to.deep.include.members(entries);
       });
     });
 
-    describe("with special characters", function() {
-      it("should support attribute keys with dash", function() {
-        expect(meta.set({ "key-1-2-3": "val-4-5-6" })).to.be.true;
-        expect(meta._meta).to.have.property("key-1-2-3-val-4-5-6")
-                          .that.eql([{ "key-1-2-3": "val-4-5-6" }]);
+    describe("multiple calls with similar attribute keys", function() {
+      it("should update existing entry", function() {
+        var entry1 = { name: "name1", content: "content1" };
+        var entry2 = { name: "name1", content: "content2" };
+
+        expect(meta._meta).to.not.deep.include(entry1);
+        expect(meta._meta).to.not.deep.include(entry2);
+
+        expect(meta.set(entry1)).to.be.true;
+        expect(meta.set(entry2)).to.be.true;
+
+        expect(meta._meta).to.not.deep.include(entry1);
+        expect(meta._meta).to.deep.include(entry2);
+      });
+    });
+
+    describe("primary keys", function() {
+      it("should not allow multiple entries with similar recognized attribute keys", function() {
+        var primaryKeys = [ "name", "property", "http-equiv", "charset" ];
+        primaryKeys.forEach(function(key) {
+          var entry1 = { content: "entry 1" };
+          var entry2 = { content: "entry 2" };
+
+          entry1[key] = key;
+          entry2[key] = key;
+
+          expect(meta._meta).to.not.deep.include(entry1);
+          expect(meta._meta).to.not.deep.include(entry2);
+
+          expect(meta.set(entry1)).to.be.true;
+          expect(meta.set(entry2)).to.be.true;
+
+          expect(meta._meta).to.not.deep.include(entry1);
+          expect(meta._meta).to.deep.include(entry2);
+        });
       });
 
-      it("should remove invalid characters from the key", function() {
-        expect(meta.set({ "key-1-2-3": "val=4;5.6" })).to.be.true;
-        expect(meta._meta).to.have.property("key-1-2-3-val456")
-                          .that.eql([{ "key-1-2-3": "val=4;5.6" }]);
+      it("should not allow entries with unrecognized attribute keys", function() {
+        var entry = { something: "something1", content: "something 1" };
+
+        expect(meta.set(entry)).to.be.false;
+        expect(meta._meta).to.not.deep.include(entry);
+      });
+    });
+  });
+
+  describe("#add()", function() {
+    it("should return false given an invalid argument", function() {
+      expect(meta).itself.to.respondTo("add");
+      expect(meta.add()).to.be.false;
+      expect(meta.add(1)).to.be.false;
+      expect(meta.add("")).to.be.false;
+      expect(meta.add({})).to.be.false;
+      expect(meta.add(new Object())).to.be.false;
+      expect(meta.add(new Function())).to.be.false;
+    });
+
+    describe("with object argument", function() {
+      it("should be successful", function() {
+        var entry = { name: "name1", content: "content1" };
+
+        expect(meta._meta).to.not.deep.include(entry);
+        expect(meta.add(entry)).to.be.true;
+        expect(meta._meta).to.deep.include(entry);
+      });
+
+      it("should convert keys to lowercase", function() {
+        expect(meta._meta).to.not.deep.include({ name: "name1", content: "content1" });
+        expect(meta.add({ NAME: "name1", CONTENT: "content1" })).to.be.true;
+        expect(meta._meta).to.deep.include({ name: "name1", content: "content1" });
+      });
+    });
+
+    describe("with array argument", function() {
+      it("should be successful", function() {
+        var entries = [
+          { name: "name1", content: "content1" },
+          { name: "name2", content: "content2" }
+        ];
+
+        expect(meta._meta).to.not.deep.include.members(entries);
+        expect(meta.add(entries)).to.be.true;
+        expect(meta._meta).to.deep.include.members(entries);
+      });
+    });
+
+    describe("multiple records with similar attribute keys", function() {
+      it("should append new entry", function() {
+        var entries = [
+          { name: "name1", content: "content1" },
+          { name: "name1", content: "content2" }
+        ];
+
+        expect(meta._meta).to.not.deep.include.members(entries);
+        expect(meta.add(entries)).to.be.true;
+        expect(meta._meta).to.deep.include.members(entries);
       });
     });
   });
@@ -65,6 +157,8 @@ describe(TEST_NAME, function() {
     it("should return false given an invalid argument", function() {
       expect(meta).itself.to.respondTo("remove");
       expect(meta.remove()).to.be.false;
+      expect(meta.remove(1)).to.be.false;
+      expect(meta.remove("")).to.be.false;
       expect(meta.remove({})).to.be.false;
       expect(meta.remove(new Object())).to.be.false;
       expect(meta.remove(new Function())).to.be.false;
@@ -72,24 +166,25 @@ describe(TEST_NAME, function() {
     });
 
     it("should be successful", function() {
-      expect(meta.set({ key: "val" })).to.be.true;
-      expect(meta._meta).to.have.property("key-val")
-                        .that.eql([{ key: "val" }]);
+      var entry1 = { name: "name1", content: "content1" };
+      var entry2 = { name: "name1", content: "content2" };
 
-      expect(meta.remove({ key: "val" })).to.be.true;
-      expect(meta._meta).to.not.have.property("key-val");
+      expect(meta.add(entry1)).to.be.true;
+      expect(meta.add(entry2)).to.be.true;
+
+      expect(meta._meta).to.deep.include(entry1);
+      expect(meta._meta).to.deep.include(entry2);
+
+      expect(meta.remove({ name: "name1" })).to.be.true;
+      expect(meta._meta).to.not.deep.include(entry1);
+      expect(meta._meta).to.not.deep.include(entry2);
     });
   });
 
   describe("#clear()", function() {
     it("should be successful", function() {
-      expect(meta.set({ key1: "val1" })).to.be.true;
-      expect(meta._meta).to.have.property("key1-val1")
-                        .that.eql([{ key1: "val1" }]);
-
-      expect(meta.set({ key2: "val2" })).to.be.true;
-      expect(meta._meta).to.have.property("key2-val2")
-                        .that.eql([{ key2: "val2" }]);
+      expect(meta.set({ name: "name1", content: "content1" })).to.be.true;
+      expect(meta.set({ name: "name2", content: "content2" })).to.be.true;
 
       expect(meta._meta).not.to.be.empty;
       expect(meta.clear()).to.be.true;
@@ -103,16 +198,16 @@ describe(TEST_NAME, function() {
     });
 
     it("should return the meta markup string", function() {
-      expect(meta.set({ name: "name1" }, { content: "content1" })).to.be.true;
+      expect(meta.set({ name: "name1" , content: "content1" })).to.be.true;
       expect(meta.toString()).to.equal('<meta name="name1" content="content1">');
 
-      expect(meta.set({ "http-equiv": "Content-Type" }, { content: "text/html; charset=utf-8" })).to.be.true;
+      expect(meta.set({ "http-equiv": "Content-Type", content: "text/html; charset=utf-8" })).to.be.true;
       expect(meta.toString()).to.equal('<meta name="name1" content="content1">\n<meta http-equiv="Content-Type" content="text/html; charset=utf-8">');
     });
 
     it("should escape html chars", function() {
-      expect(meta.set({ key: "a-\"-'-<->-&-`-z" })).to.be.true;
-      expect(meta.toString()).to.equal('<meta key="a-&quot;-&#39;-&lt;-&gt;-&amp;-&#96;-z">');
+      expect(meta.set({ name: "a-\"-'-<->-&-`-z" })).to.be.true;
+      expect(meta.toString()).to.equal('<meta name="a-&quot;-&#39;-&lt;-&gt;-&amp;-&#96;-z">');
     });
   });
 
@@ -122,11 +217,18 @@ describe(TEST_NAME, function() {
     });
 
     it("should return the meta array", function() {
-      expect(meta.set({ key: "val" })).to.be.true;
-      expect(meta.set({ key1: "val1" }, [{ content: "content1" }, { content: "content2" }])).to.be.true;
+      var entries = [
+        { name: "name1", content: "content1" },
+        { property: "property2", content: "content2" }
+      ];
+
+      expect(meta._meta).to.not.deep.include.members(entries);
+      expect(meta.set(entries)).to.be.true;
+      expect(meta._meta).to.deep.include.members(entries);
+
       var json = meta.toJSON();
       expect(json).to.be.an("array").that.is.not.empty;
-      expect(json).to.eql([ { key: "val" }, { key1: "val1", content: "content1" }, { key1: "val1", content: "content2" } ]);
+      expect(json).to.eql(entries);
     });
   });
 
