@@ -16,7 +16,7 @@ Upon installation, a **_meta_** object will be added to **_req_**.
 //-- api/controllers/HomeController.js
 module.exports = {
   index: function(req, res) {
-    req.meta.set({ name: "title" }, { content: "Page Title" });
+    req.meta.set({ name: "title", content: "Page Title" });
     res.view();
   }
 };
